@@ -1,0 +1,105 @@
+COMO CARGAR VIDEOS AL CATALOGO
+==============================
+
+1. Pone tus videos dentro de la carpeta de su categoria.
+   Estan todas dentro de la carpeta assets:
+
+     waa-catalogo web\assets\mapping\
+     waa-catalogo web\assets\animacion\
+     waa-catalogo web\assets\interactivos\
+     waa-catalogo web\assets\juegos\
+     waa-catalogo web\assets\salas-inmersivas\
+
+2. Nombra cada archivo asi:
+
+     2021 - Forta - Video de lanzamiento - 1.mp4
+     ----   -----   -------------------   -
+     ano    proyecto  descripcion          orden
+
+   El "orden" del final solo hace falta si hay varias piezas del
+   mismo proyecto (1, 2, 3...). La descripcion tambien es opcional.
+
+   Ejemplos validos:
+
+     2021 - Forta - Video de lanzamiento - 1.mp4
+     2024 - Total Energies - Stand Oil and Gas.mp4
+     2023 - Kimberly - Spot institucional - 2.mp4
+
+3. Hace doble click en el UNICO archivo que tenes que tocar,
+   que esta en la raiz (o sea, en waa-catalogo web):
+
+     abrir-catalogo.bat
+
+   Ese archivo hace todo: revisa las carpetas, actualiza el
+   catalogo con lo que encuentre, y lo abre en el navegador.
+   No hay que acordarse de actualizar por separado.
+
+   Si algun archivo tiene un problema (pesa de mas, o le falta el
+   ano en el nombre), la ventana negra se queda abierta con el
+   aviso. Si esta todo bien, se cierra sola.
+
+
+FORMATOS ACEPTADOS
+------------------
+  Video:   .mp4  .webm  .mov   <-- lo recomendado
+  Imagen:  .jpg  .jpeg  .png  .gif  .webp
+
+
+COMO EXPORTAR LOS VIDEOS
+------------------------
+  Formato:   MP4 (H.264)
+  Duracion:  3 a 6 segundos, con el loop calzado
+  Ancho:     alrededor de 1400 px
+  Audio:     ninguno (sacar la pista de audio)
+  Peso:      hasta 5 MB por archivo
+
+  Si tu programa lo ofrece, activa "fast start" o "web optimized".
+
+  Se reproducen solos, en loop y sin sonido. Solo se reproduce lo
+  que esta a la vista: el resto queda quieto para no trabar la web.
+
+  OPCIONAL: si exportas tambien un JPG del primer cuadro con el
+  mismo nombre, se muestra al instante mientras el video carga.
+
+     2021 - Forta - Video de lanzamiento - 1.mp4
+     2021 - Forta - Video de lanzamiento - 1.jpg   <-- el poster
+
+
+NOTAS
+-----
+- Los acentos y las enes funcionan sin problema en los nombres.
+- Si una categoria queda vacia, aparece en el menu pero sin videos.
+- Mientras no cargues nada, el catalogo muestra bloques grises con
+  "Lorem ipsum" y "0000".
+
+
+DONDE ESTA CADA COSA
+--------------------
+  waa-catalogo web\
+    abrir-catalogo.bat      <-- EL UNICO QUE TENES QUE TOCAR
+    abrir-catalogo.ps1          lo usa el anterior, no lo toques
+    index.html                  la pagina
+    css\globals.css             el diseno
+    js\app.js                   el funcionamiento
+    data\categories.js          las categorias (editable)
+    data\projects.js            los proyectos (generado, no editar)
+    assets\waa-logo.png         el logo
+    assets\mapping\             TUS VIDEOS
+    assets\animacion\           TUS VIDEOS
+    assets\interactivos\        TUS VIDEOS
+    assets\juegos\              TUS VIDEOS
+    assets\salas-inmersivas\    TUS VIDEOS
+
+
+COMO AGREGAR UNA CATEGORIA NUEVA
+--------------------------------
+  1. Abri data\categories.js y agrega una linea al array:
+
+       { slug: 'nombre-interno', title: 'Nombre visible' },
+
+     El slug va sin acentos, sin espacios y en minuscula.
+     El title es lo que se ve en pantalla, ahi si van acentos.
+
+  2. Abri el catalogo. La carpeta se crea sola en assets.
+
+  El orden del array es el orden del catalogo.

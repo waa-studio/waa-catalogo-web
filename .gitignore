@@ -1,0 +1,7 @@
+# Basura del sistema operativo. Ya no hay nada que compilar ni instalar,
+# así que todos los demás archivos de la carpeta forman parte de la web.
+.DS_Store
+Thumbs.db
+*.local
+.vscode/*
+!.vscode/extensions.json

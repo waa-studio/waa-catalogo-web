@@ -1,0 +1,583 @@
+/* ─────────────────────────────────────────────────────────────
+   WAA STUDIO — estilos globales
+   Variables primero: cambiá aquí colores, fuentes y ritmo.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Color */
+  --bg: #0a0907;
+  --text-primary: #f3f1eb;
+  --text-secondary: #73716b;
+  --text-muted: #474641;
+  --card-bg: #141310;
+  --hairline: rgba(243, 241, 235, 0.08);
+
+  /* Tipografía */
+  --font-primary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Monoespaciada de la columna izquierda: el título grande y el
+     listado. El respaldo son las mono del sistema, por si no hay
+     conexión para bajar la de Google. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono',
+    'Segoe UI Mono', Consolas, Menlo, monospace;
+
+  /* Layout */
+  --header-h: 72px;
+  --sidebar-w: 32%;
+  --gutter: 40px;
+
+  /* Grid — el aire entre piezas. Chico a proposito: con las
+     proporciones reales de cada video, la grilla se lee como un
+     mosaico y el hueco solo tiene que separar, no espaciar.
+     Los dos valores van juntos: el vertical lo calcula el JS a
+     partir de --row-gap, asi queda identico al lateral. */
+  --col-gap: 8px;
+  --row-gap: 8px;
+}
+
+/* Reset mínimo */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden; /* sin scroll horizontal accidental */
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Accesibilidad: foco visible */
+:focus-visible {
+  outline: 1px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 200;
+  background: var(--text-primary);
+  color: var(--bg);
+  padding: 10px 16px;
+  border-radius: 4px;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ── Scrollbar sutil ─────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2925 transparent;
+}
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2a2925;
+  border-radius: 2px;
+}
+
+/* ── HEADER ──────────────────────────────────────────────────── */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-h);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  /* Fondo sólido y plano, sin degradado. Usa el mismo negro que la
+     página para que no se vea el corte contra el fondo. */
+  background: var(--bg);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+}
+/* Altura fija del logo; el ancho se acomoda solo manteniendo la proporción. */
+.logo-img {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+
+.socials {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.socials a {
+  /* Blanco puro, no el blanco cálido del resto de la interfaz: sobre
+     negro y en trazo fino, el cálido se lee grisáceo. */
+  color: #fff;
+  display: inline-flex;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+/* Al pasar el cursor se atenúan, sin moverse ni cambiar de color. */
+.socials a:hover,
+.socials a:focus-visible {
+  opacity: 0.55;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--header-h) + 7vh) var(--gutter) 48px var(--gutter);
+}
+
+/* Título grande de la categoría activa. La altura mínima reserva el
+   espacio para que el listado de abajo no se mueva al cambiar de
+   categoría, aunque el título sea más largo o más corto. */
+.sidebar-title-area {
+  min-height: 8rem;
+}
+.sidebar-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  /* La mono es más ancha por letra: un punto menos de cuerpo para que
+     un título largo como "Interactivos" no se pase de la columna. */
+  font-size: clamp(1.9rem, 2.6vw, 2.9rem);
+  line-height: 1.15;
+  /* Interletrado abierto: le da aire al título grande. Antes estaba en
+     negativo (-0.02em), con las letras apretadas entre sí. */
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+  will-change: transform, opacity;
+}
+
+/* Listado chico: las cuatro categorías en gris, la activa en blanco. */
+.category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.category-item {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  /* Un solo control: el color es blanco y la opacidad define cuánto
+     pesa cada uno. Las inactivas al 48% dan 4.5:1 contra el fondo —
+     el mínimo legible para texto de este tamaño, sin competirle a la
+     activa. Subir o bajar este número es todo el ajuste. */
+  color: var(--text-primary);
+  opacity: 0.48;
+  transition: opacity 0.45s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateX(0);
+}
+.category-num {
+  font-variant-numeric: tabular-nums;
+}
+.category-item:hover {
+  opacity: 0.7;
+}
+.category-item.is-active {
+  opacity: 1;
+  transform: translateX(0.35rem);
+}
+/* El número de la activa queda un escalón por debajo del nombre,
+   para que la palabra sea lo que se lee primero. */
+.category-item.is-active .category-num {
+  opacity: 0.55;
+}
+
+/* ── CONTENT (derecha) ───────────────────────────────────────── */
+.content,
+#content {
+  min-width: 0;
+}
+.content {
+  padding: calc(var(--header-h) + 48px) var(--gutter) 15vh 0;
+}
+
+.category-section {
+  /* Sin separación extra entre categorías: la última fila de cada una
+     ya aporta su `--row-gap` por abajo (via .masonry-item), así que el
+     salto de categoría queda con el mismo aire que hay entre imágenes.
+     El corte entre categorías lo marca la opacidad, no un hueco. */
+  padding-bottom: 0;
+  transition: opacity 0.7s ease;
+}
+
+/* Las categorías que no son la activa se atenúan. Así se entiende
+   dónde termina una y empieza la otra sin abrir un hueco en la grilla.
+   La opacidad va en la SECCIÓN y no en cada imagen a propósito: la
+   animación de entrada ya maneja la opacidad de cada una, y si las
+   dos tocaran lo mismo se pisarían. Puestas en capas distintas, se
+   multiplican solas. */
+.category-section.is-dimmed {
+  opacity: 0.32;
+}
+
+/* Masonry sobre CSS Grid.
+   Las filas miden 1px y cada imagen ocupa tantas como necesita (el JS
+   calcula el `span`). Con `row-gap: 0`, el aire vertical lo da ese
+   cálculo, así queda exactamente igual al lateral — cosa que con
+   columnas CSS era imposible: repartían el contenido y dejaban los
+   bordes de abajo desparejos. */
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 0;
+  grid-auto-rows: 1px;
+}
+.masonry-item {
+  will-change: transform, opacity;
+}
+
+/* ── CARD ────────────────────────────────────────────────────── */
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--card-bg);
+  cursor: pointer;
+}
+/* Hueco gris: se ve la grilla mientras no haya material cargado.
+   Se comporta igual que una tarjeta real (se agranda y se abre). */
+.card.is-empty {
+  background: #26251f;
+}
+/* Degradado apenas perceptible. Un gris plano, al agrandarse, se ve
+   exactamente igual: sin esta textura el zoom sería invisible. */
+.empty-fill {
+  display: block;
+  background: linear-gradient(135deg, #2f2e26 0%, #211f1a 55%, #2b2a22 100%);
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card:hover .card-img,
+.card:focus-visible .card-img {
+  transform: scale(1.045);
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 16px;
+  background: linear-gradient(transparent 45%, rgba(0, 0, 0, 0.45));
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.card:hover .card-overlay,
+.card:focus-visible .card-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+/* Título y flecha en la misma línea; el año va debajo. */
+.card-titlerow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.card-year {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.card-arrow {
+  color: var(--text-primary);
+  display: inline-flex;
+}
+
+/* ── MOBILE CATEGORY BAR (oculta en desktop) ─────────────────── */
+.mobile-cat {
+  display: none;
+}
+
+/* ── LIGHTBOX ────────────────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 6vw;
+  background: rgba(0, 0, 0, 0.92);
+}
+
+.lb-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 90vw;
+}
+/* La altura fija + el aspect-ratio que pone el JS reservan la caja
+   desde el primer instante. Sin eso, un <video> arranca en su tamaño
+   por defecto (300x150) hasta que descarga sus metadatos, y se ve
+   saltar un reproductor diminuto antes de acomodarse. */
+.lb-img {
+  height: 82vh;
+  width: auto;
+  max-width: 90vw;
+  max-height: 82vh;
+  object-fit: contain;
+  background: #000;
+}
+/* Tiene que ir DESPUÉS de .lb-img: las dos reglas pesan igual, así que
+   gana la última. Si no, el `background: #000` de arriba tapa el gris
+   del hueco y el visor se ve completamente negro. */
+.lb-img.empty-fill {
+  background: linear-gradient(135deg, #2f2e26 0%, #211f1a 55%, #2b2a22 100%);
+}
+
+/* Red de seguridad: aunque los videos se crean sin controles, algunos
+   navegadores insisten en dibujar su propia barra. Esto la oculta. */
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+.lb-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+}
+.lb-title {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.lb-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.lb-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.lb-close:hover {
+  color: var(--text-primary);
+  transform: rotate(90deg);
+}
+
+.lb-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 12px;
+  transition: color 0.3s ease;
+}
+.lb-nav:hover {
+  color: var(--text-primary);
+}
+.lb-prev {
+  left: 14px;
+}
+.lb-next {
+  right: 14px;
+}
+
+/* ── TABLET ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 30%;
+    --gutter: 28px;
+  }
+  .masonry {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sidebar-title {
+    /* Más chico que en escritorio: la monoespaciada ocupa bastante más
+       ancho por letra y "Interactivos" se salía de la columna. */
+    font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+  }
+  .sidebar-title-area {
+    min-height: 6rem;
+  }
+}
+
+/* ── MOBILE ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .layout {
+    display: block;
+  }
+  .sidebar {
+    display: none;
+  }
+  .content {
+    padding: 24px var(--gutter) 12vh var(--gutter);
+  }
+
+  /* Barra de categoría sticky bajo el header */
+  .mobile-cat {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px var(--gutter) 18px var(--gutter);
+    padding-top: calc(var(--header-h) + 16px);
+    background: linear-gradient(
+      to bottom,
+      var(--bg) 82%,
+      rgba(10, 9, 7, 0)
+    );
+  }
+  .mobile-cat-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    animation: catFade 0.5s ease;
+  }
+  .mobile-cat-count {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @keyframes catFade {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .masonry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root {
+    --gutter: 20px;
+  }
+}
+
+/* ── prefers-reduced-motion ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
