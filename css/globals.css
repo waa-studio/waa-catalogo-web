@@ -159,6 +159,37 @@ a {
   opacity: 0.55;
 }
 
+/* ── SCROLLER ────────────────────────────────────────────────
+   Abierta como página normal, este envoltorio no hace nada: no
+   mide ni pinta, y scrollea la ventana como siempre.
+
+   Embebida en un iframe (Wix) es otra historia. Ahí el scroll del
+   documento no es confiable: según cómo arme el marco la
+   plataforma, el que se mueve puede ser el marco de afuera, y
+   entonces el catálogo nunca se entera de que alguien scrolleó.
+   Sin scroll propio, `position: sticky` no tiene contra qué
+   fijarse y la barra lateral se va de largo.
+
+   La solución es quedarse con el scroll: app.js le pone `is-embed`
+   al <html> cuando detecta que está dentro de un marco, y el
+   envoltorio pasa a medir lo que mide el marco y a scrollear él.
+   Así no importa cómo esté configurado el iframe. */
+.is-embed,
+.is-embed body {
+  height: 100%;
+  overflow: hidden;
+}
+.is-embed .scroller {
+  /* Las dos líneas van juntas: la segunda pisa a la primera donde
+     exista. `dvh` descuenta la barra del navegador en el celular;
+     `vh` es el respaldo para los que no la entienden. */
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ── LAYOUT ──────────────────────────────────────────────────── */
 .layout {
   display: grid;
@@ -171,6 +202,7 @@ a {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
 }
 
 .sidebar-inner {

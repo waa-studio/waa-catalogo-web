@@ -56,30 +56,39 @@
       </nav>
     </header>
 
-    <!-- Barra de categoría sticky (solo mobile) -->
-    <div class="mobile-cat" aria-hidden="true">
-      <span class="mobile-cat-title"></span>
-      <span class="mobile-cat-count"></span>
-    </div>
+    <!-- Envoltorio del scroll.
+         Abierta como pagina normal no hace nada: scrollea la ventana,
+         como siempre. Embebida en un iframe (Wix) toma el alto del
+         marco y pasa a scrollear ella, porque ahi el scroll del
+         documento no es confiable: si el que se mueve es el marco de
+         afuera, el catalogo no se entera y la barra lateral no se
+         puede quedar fija. Lo maneja js/app.js con la clase is-embed. -->
+    <div class="scroller">
+      <!-- Barra de categoría sticky (solo mobile) -->
+      <div class="mobile-cat" aria-hidden="true">
+        <span class="mobile-cat-title"></span>
+        <span class="mobile-cat-count"></span>
+      </div>
 
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="sidebar-inner">
-          <!-- Titulo grande de la categoria activa -->
-          <div class="sidebar-title-area">
-            <h1 class="sidebar-title"></h1>
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="sidebar-inner">
+            <!-- Titulo grande de la categoria activa -->
+            <div class="sidebar-title-area">
+              <h1 class="sidebar-title"></h1>
+            </div>
+
+            <!-- Listado chico: las cuatro, en gris, con la activa en blanco -->
+            <nav class="category-nav" aria-label="Categorías">
+              <ol class="category-list"></ol>
+            </nav>
           </div>
+        </aside>
 
-          <!-- Listado chico: las cuatro, en gris, con la activa en blanco -->
-          <nav class="category-nav" aria-label="Categorías">
-            <ol class="category-list"></ol>
-          </nav>
-        </div>
-      </aside>
-
-      <main id="content">
-        <div class="content" role="list"></div>
-      </main>
+        <main id="content">
+          <div class="content" role="list"></div>
+        </main>
+      </div>
     </div>
 
     <!-- GSAP desde CDN, igual que Three.js en las otras páginas de WAA.

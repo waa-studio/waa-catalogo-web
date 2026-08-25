@@ -24,6 +24,77 @@
     gsap.registerPlugin(ScrollTrigger)
   }
 
+  /* ── 0. Quién scrollea ─────────────────────────────────────────
+     Abierta como página normal, scrollea la ventana: lo de siempre.
+
+     Embebida en un iframe (Wix) no alcanza. Según cómo la plataforma
+     arme el marco, el que se mueve puede ser el marco de afuera, y
+     entonces adentro nunca pasa nada: para el catálogo nadie scrolleó.
+     Sin scroll propio, la barra lateral no se puede quedar fija —
+     `position: sticky` necesita algo que scrollee para agarrarse— y
+     los nombres de las categorías se van de largo con el resto.
+
+     Por eso, dentro de un marco, el scroll pasa a ser nuestro: el
+     envoltorio .scroller toma el alto del marco y scrollea él. Así
+     el catálogo se comporta igual esté donde esté, sin depender de
+     cómo quedó configurado el iframe.
+
+     Todo lo que sigue mide y mueve a través de estas cuatro
+     funciones, para que el resto del archivo no tenga que saber
+     cuál de los dos casos es. */
+
+  var enIframe = (function () {
+    try {
+      return window.self !== window.top
+    } catch (e) {
+      // Un marco de otro dominio ni siquiera deja comparar: si no se
+      // puede saber, es porque estamos adentro de uno.
+      return true
+    }
+  })()
+
+  var scrollBox = document.querySelector('.scroller')
+
+  // Sin el envoltorio en el HTML, sigue andando con el scroll de la
+  // ventana: el modo embebido simplemente no se activa.
+  if (enIframe && !scrollBox) enIframe = false
+  if (enIframe) document.documentElement.classList.add('is-embed')
+
+  // Lo que GSAP necesita saber: en modo normal es `window`, que es su
+  // valor por defecto.
+  var scroller = enIframe ? scrollBox : window
+
+  function scrollActual() {
+    return enIframe ? scrollBox.scrollTop : window.scrollY
+  }
+
+  function altoVista() {
+    return enIframe ? scrollBox.clientHeight : window.innerHeight
+  }
+
+  function irHasta(y, suave) {
+    var opciones = { top: y, behavior: suave ? 'smooth' : 'auto' }
+    if (enIframe) scrollBox.scrollTo(opciones)
+    else window.scrollTo(opciones)
+  }
+
+  // Bloquea el scroll mientras el visor está abierto, y lo devuelve
+  // como estaba. Hay que tocar el elemento que scrollea, no siempre
+  // el body.
+  var bloqueado = null
+
+  function bloquearScroll() {
+    var nodo = enIframe ? scrollBox : document.body
+    bloqueado = { nodo: nodo, antes: nodo.style.overflow }
+    nodo.style.overflow = 'hidden'
+  }
+
+  function liberarScroll() {
+    if (!bloqueado) return
+    bloqueado.nodo.style.overflow = bloqueado.antes
+    bloqueado = null
+  }
+
   /* ── 1. Utilidades ─────────────────────────────────────────── */
 
   function reducedMotion() {
@@ -208,7 +279,11 @@
           }
         })
       },
-      { rootMargin: '200px 0px' }
+      // El `root` explícito importa embebidos: el que scrollea es el
+      // envoltorio, no la ventana, y el margen de 200px tiene que
+      // medirse contra él. Fuera del iframe va en null, que es la
+      // ventana — el valor de siempre.
+      { root: enIframe ? scrollBox : null, rootMargin: '200px 0px' }
     )
 
     videosEnGrilla.forEach(function (v) {
@@ -398,10 +473,10 @@
 
     var header = document.querySelector('.header')
     var tope = (header ? header.offsetHeight : 0) + 24
-    var faltante = window.innerHeight - tope - ultima.offsetHeight
+    var faltante = altoVista() - tope - ultima.offsetHeight
 
     // Nunca menos que el aire de siempre al pie del catálogo.
-    var minimo = window.innerHeight * 0.15
+    var minimo = altoVista() * 0.15
     contenido.style.paddingBottom = Math.round(Math.max(minimo, faltante)) + 'px'
   }
 
@@ -418,11 +493,8 @@
     if (!target) return
     var header = document.querySelector('.header')
     var offset = (header ? header.offsetHeight : 0) + 24
-    var y = target.getBoundingClientRect().top + window.scrollY - offset
-    window.scrollTo({
-      top: y,
-      behavior: reducedMotion() ? 'auto' : 'smooth'
-    })
+    var y = target.getBoundingClientRect().top + scrollActual() - offset
+    irHasta(y, !reducedMotion())
   }
 
   /* ── 5. Lightbox ───────────────────────────────────────────── */
@@ -442,7 +514,6 @@
     closeLightbox()
 
     var index = startIndex
-    var previousOverflow = document.body.style.overflow
 
     var backdrop = el('div', 'lightbox')
     backdrop.setAttribute('role', 'dialog')
@@ -585,7 +656,7 @@
 
     paint()
     document.body.appendChild(backdrop)
-    document.body.style.overflow = 'hidden'
+    bloquearScroll()
     pausarGrilla()
 
     if (canAnimate()) {
@@ -601,7 +672,7 @@
       )
     }
 
-    lb = { node: backdrop, onKey: onKey, previousOverflow: previousOverflow }
+    lb = { node: backdrop, onKey: onKey }
   }
 
   function closeLightbox() {
@@ -616,7 +687,7 @@
       v.load()
     }
     if (lb.node.parentNode) lb.node.parentNode.removeChild(lb.node)
-    document.body.style.overflow = lb.previousOverflow
+    liberarScroll()
     lb = null
     reanudarGrilla()
   }
@@ -653,7 +724,7 @@
   // Toma la última sección cuyo borde superior ya cruzó la línea del 45%
   // del viewport. Es determinista: funciona bajando, subiendo y al cargar.
   function computeActive() {
-    var line = window.innerHeight * 0.45
+    var line = altoVista() * 0.45
     var idx = 0
     sections.forEach(function (section, i) {
       if (section.getBoundingClientRect().top <= line) idx = i
@@ -662,7 +733,12 @@
   }
 
   function watchScroll() {
-    if (hasScrollTrigger) {
+    // Embebido va por el camino simple: escuchar el scroll del
+    // envoltorio y listo. Un ScrollTrigger que abarque toda la página
+    // necesita un elemento de referencia con la altura completa, y
+    // dentro del envoltorio esa cuenta se complica sin ganar nada:
+    // esto hace exactamente lo mismo.
+    if (hasScrollTrigger && !enIframe) {
       ScrollTrigger.create({
         trigger: document.documentElement,
         start: 'top top',
@@ -671,8 +747,8 @@
         onRefresh: computeActive
       })
     } else {
-      // Sin GSAP (por ejemplo, sin internet) la navegación sigue andando.
-      window.addEventListener('scroll', computeActive, { passive: true })
+      // También es el camino de siempre cuando no hay GSAP (sin internet).
+      scroller.addEventListener('scroll', computeActive, { passive: true })
       window.addEventListener('resize', computeActive)
     }
     computeActive()
@@ -718,15 +794,68 @@
   // Entrada de las imágenes al scrollear. El recorrido es amplio (64px +
   // escala) para que se note, pero `power4.out` concentra el movimiento
   // en el primer tercio: se lee rápido y aterriza suave, sin rebote.
+  //
+  // El tween es uno solo; lo que cambia es quién lo dispara.
+  function revelarCards(lote, devuelta) {
+    gsap.to(lote, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: devuelta ? 0.5 : 0.95,
+      ease: devuelta ? 'power3.out' : 'power4.out',
+      stagger: devuelta ? 0.04 : 0.07,
+      overwrite: true
+    })
+  }
+
   function animateCards() {
     // Si no se puede animar, las imágenes quedan visibles tal cual:
-    // nunca se les aplica el opacity 0 inicial.
-    if (!canAnimate() || !hasScrollTrigger) return
+    // nunca se les aplica el opacity 0 inicial. Esa regla vale para
+    // todo lo que sigue — antes de esconder nada hay que estar seguro
+    // de que algo las va a volver a mostrar.
+    if (!canAnimate()) return
 
     var cards = Array.prototype.slice.call(
       document.querySelectorAll('.masonry-item')
     )
     if (!cards.length) return
+
+    // Embebidos, el disparador es un IntersectionObserver contra el
+    // envoltorio. Es nativo y le decimos exactamente cuál es el
+    // elemento que scrollea, sin intermediarios: adentro de un iframe
+    // eso es justo lo que no conviene dar por sentado. Si fallara,
+    // las imágenes se quedarían invisibles y el catálogo se vería
+    // negro, así que acá no hay lugar para suposiciones.
+    if (enIframe) {
+      if (typeof IntersectionObserver === 'undefined') return
+
+      gsap.set(cards, { opacity: 0, y: 64, scale: 0.94 })
+
+      var observador = new IntersectionObserver(
+        function (entradas) {
+          var lote = []
+          entradas.forEach(function (e) {
+            if (!e.isIntersecting) return
+            lote.push(e.target)
+            // Una vez que entró, ya está: no hace falta seguir
+            // mirándola, y así no vuelve a animarse al subir.
+            observador.unobserve(e.target)
+          })
+          if (lote.length) revelarCards(lote, false)
+        },
+        // El recorte de abajo hace que empiece a entrar un poco antes
+        // de llegar al borde, igual que el `top 90%` del otro camino.
+        { root: scrollBox, rootMargin: '0px 0px -10% 0px' }
+      )
+
+      cards.forEach(function (c) {
+        observador.observe(c)
+      })
+      return
+    }
+
+    // Página normal: sigue el camino de siempre, con ScrollTrigger.
+    if (!hasScrollTrigger) return
 
     gsap.set(cards, { opacity: 0, y: 64, scale: 0.94 })
 
@@ -738,26 +867,10 @@
       // una cascada larga cuando entran muchas juntas.
       batchMax: 6,
       onEnter: function (batch) {
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.95,
-          ease: 'power4.out',
-          stagger: 0.07,
-          overwrite: true
-        })
+        revelarCards(batch, false)
       },
       onEnterBack: function (batch) {
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.5,
-          ease: 'power3.out',
-          stagger: 0.04,
-          overwrite: true
-        })
+        revelarCards(batch, true)
       }
     })
   }
