@@ -8,8 +8,8 @@
    Para cambiar el catalogo: agrega, saca o renombra archivos
    en assets\<categoria> y volve a ejecutar el .bat.
 
-   Ultima actualizacion: 24/08/2026 13:52
-   102 archivos en 5 categorias
+   Ultima actualizacion: 26/08/2026 10:00
+   100 archivos en 5 categorias
    ------------------------------------------------------------- */
 
 window.WAA = window.WAA || {}
@@ -966,18 +966,6 @@ WAA.projects = [
   {
     id: 'interactivos-22',
     category: 'interactivos',
-    title: 'Museo del Sabor',
-    subtitle: '',
-    year: 2024,
-    type: 'video',
-    src: 'assets/interactivos/2024-Museo%20del%20Sabor-2.mp4',
-    poster: '',
-    aspectRatio: '1920 / 1080',
-    alt: 'Museo del Sabor - Interactivos'
-  },
-  {
-    id: 'interactivos-23',
-    category: 'interactivos',
     title: 'AFA',
     subtitle: 'Campeones del Mundo',
     year: 2023,
@@ -988,7 +976,7 @@ WAA.projects = [
     alt: 'AFA - Campeones del Mundo - Interactivos'
   },
   {
-    id: 'interactivos-24',
+    id: 'interactivos-23',
     category: 'interactivos',
     title: 'AFA',
     subtitle: 'Campeones del Mundo',
@@ -1000,7 +988,7 @@ WAA.projects = [
     alt: 'AFA - Campeones del Mundo - Interactivos'
   },
   {
-    id: 'interactivos-25',
+    id: 'interactivos-24',
     category: 'interactivos',
     title: 'Cafe Martínez 90 años',
     subtitle: '',
@@ -1012,7 +1000,7 @@ WAA.projects = [
     alt: 'Cafe Martínez 90 años - Interactivos'
   },
   {
-    id: 'interactivos-26',
+    id: 'interactivos-25',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1024,7 +1012,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-27',
+    id: 'interactivos-26',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1036,7 +1024,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-28',
+    id: 'interactivos-27',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1048,7 +1036,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-29',
+    id: 'interactivos-28',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1060,19 +1048,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-30',
-    category: 'interactivos',
-    title: 'CTI El Camino de Brochero',
-    subtitle: '',
-    year: 2023,
-    type: 'video',
-    src: 'assets/interactivos/2023-CTI%20El%20Camino%20de%20Brochero-5.mp4',
-    poster: '',
-    aspectRatio: '1920 / 1080',
-    alt: 'CTI El Camino de Brochero - Interactivos'
-  },
-  {
-    id: 'interactivos-31',
+    id: 'interactivos-29',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1084,7 +1060,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-32',
+    id: 'interactivos-30',
     category: 'interactivos',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
@@ -1096,7 +1072,7 @@ WAA.projects = [
     alt: 'CTI El Camino de Brochero - Interactivos'
   },
   {
-    id: 'interactivos-33',
+    id: 'interactivos-31',
     category: 'interactivos',
     title: 'PAE Stand AOG La Rural',
     subtitle: '',
