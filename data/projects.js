@@ -8,8 +8,8 @@
    Para cambiar el catalogo: agrega, saca o renombra archivos
    en assets\<categoria> y volve a ejecutar el .bat.
 
-   Ultima actualizacion: 26/08/2026 10:00
-   100 archivos en 5 categorias
+   Ultima actualizacion: 26/08/2026 10:36
+   104 archivos en 5 categorias
    ------------------------------------------------------------- */
 
 window.WAA = window.WAA || {}
@@ -1084,6 +1084,42 @@ WAA.projects = [
     alt: 'PAE Stand AOG La Rural - Interactivos'
   },
   {
+    id: 'interactivos-32',
+    category: 'interactivos',
+    title: 'PAE Stand AOG La Rural',
+    subtitle: '',
+    year: 2022,
+    type: 'video',
+    src: 'assets/interactivos/2022-PAE%20Stand%20AOG%20La%20Rural-2.mp4',
+    poster: '',
+    aspectRatio: '1920 / 1080',
+    alt: 'PAE Stand AOG La Rural - Interactivos'
+  },
+  {
+    id: 'interactivos-33',
+    category: 'interactivos',
+    title: 'PAE Stand AOG La Rural',
+    subtitle: '',
+    year: 2022,
+    type: 'video',
+    src: 'assets/interactivos/2022-PAE%20Stand%20AOG%20La%20Rural-3.mp4',
+    poster: '',
+    aspectRatio: '1920 / 1080',
+    alt: 'PAE Stand AOG La Rural - Interactivos'
+  },
+  {
+    id: 'interactivos-34',
+    category: 'interactivos',
+    title: 'PAE Stand AOG La Rural',
+    subtitle: '',
+    year: 2022,
+    type: 'video',
+    src: 'assets/interactivos/2022-PAE%20Stand%20AOG%20La%20Rural-4.mp4',
+    poster: '',
+    aspectRatio: '1920 / 1080',
+    alt: 'PAE Stand AOG La Rural - Interactivos'
+  },
+  {
     id: 'juegos-1',
     category: 'juegos',
     title: 'TotalEnergies',
@@ -1182,6 +1218,18 @@ WAA.projects = [
   {
     id: 'salas-inmersivas-3',
     category: 'salas-inmersivas',
+    title: 'TGS',
+    subtitle: 'Argentina Oil & Gas Expo',
+    year: 2025,
+    type: 'video',
+    src: 'assets/salas-inmersivas/2025-TGS-Argentina%20Oil%20%26%20Gas%20Expo-3.mp4',
+    poster: '',
+    aspectRatio: '1920 / 1080',
+    alt: 'TGS - Argentina Oil & Gas Expo - Salas inmersivas'
+  },
+  {
+    id: 'salas-inmersivas-4',
+    category: 'salas-inmersivas',
     title: 'TotalEnergies',
     subtitle: 'Argentina Oil & Gas Expo',
     year: 2025,
@@ -1192,7 +1240,7 @@ WAA.projects = [
     alt: 'TotalEnergies - Argentina Oil & Gas Expo - Salas inmersivas'
   },
   {
-    id: 'salas-inmersivas-4',
+    id: 'salas-inmersivas-5',
     category: 'salas-inmersivas',
     title: 'AFA',
     subtitle: 'Campeones del Mundo',
@@ -1204,7 +1252,7 @@ WAA.projects = [
     alt: 'AFA - Campeones del Mundo - Salas inmersivas'
   },
   {
-    id: 'salas-inmersivas-5',
+    id: 'salas-inmersivas-6',
     category: 'salas-inmersivas',
     title: 'CTI El Camino de Brochero',
     subtitle: '',
