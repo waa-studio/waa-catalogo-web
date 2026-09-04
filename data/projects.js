@@ -8,8 +8,8 @@
    Para cambiar el catalogo: agrega, saca o renombra archivos
    en assets\<categoria> y volve a ejecutar el .bat.
 
-   Ultima actualizacion: 26/08/2026 10:36
-   104 archivos en 5 categorias
+   Ultima actualizacion: 02/09/2026 16:00
+   105 archivos en 5 categorias
    ------------------------------------------------------------- */
 
 window.WAA = window.WAA || {}
@@ -1190,6 +1190,18 @@ WAA.projects = [
     poster: '',
     aspectRatio: '1920 / 1080',
     alt: 'Museo del Sabor - Juegos'
+  },
+  {
+    id: 'juegos-7',
+    category: 'juegos',
+    title: 'PAE',
+    subtitle: 'Stand AOG',
+    year: 2023,
+    type: 'video',
+    src: 'assets/juegos/2023-PAE-Stand%20AOG.mp4',
+    poster: '',
+    aspectRatio: '2160 / 3840',
+    alt: 'PAE - Stand AOG - Juegos'
   },
   {
     id: 'salas-inmersivas-1',
